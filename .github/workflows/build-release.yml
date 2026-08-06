@@ -1,0 +1,111 @@
+name: Build & Release APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-apk
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build signed release APK
+        env:
+          KEYSTORE_PATH: keystore/juleslink-release.jks
+          KEYSTORE_PASSWORD: juleslink2026
+          KEY_ALIAS: juleslink
+          KEY_PASSWORD: juleslink2026
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Locate APK
+        id: apk
+        run: |
+          set -euo pipefail
+          APK_PATH=$(find app/build/outputs/apk/release -name "*.apk" | head -n1)
+          if [ -z "$APK_PATH" ]; then
+            echo "APK not found" >&2
+            ls -R app/build/outputs || true
+            exit 1
+          fi
+          VERSION_NAME=$(grep -oP 'versionName = "\K[^"]+' app/build.gradle.kts | head -n1)
+          VERSION_CODE=$(grep -oP 'versionCode = \K[0-9]+' app/build.gradle.kts | head -n1)
+          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          TAG="v${VERSION_NAME}-${SHORT_SHA}"
+          OUT="JulesLink-v${VERSION_NAME}.apk"
+          cp "$APK_PATH" "$OUT"
+          {
+            echo "path=$OUT"
+            echo "tag=$TAG"
+            echo "version=$VERSION_NAME"
+            echo "code=$VERSION_CODE"
+          } >> "$GITHUB_OUTPUT"
+          ls -lh "$OUT"
+
+      - name: Delete previous releases and tags
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # Delete all existing releases so only the new one remains
+          while read -r tag; do
+            [ -z "$tag" ] && continue
+            echo "Deleting release: $tag"
+            gh release delete "$tag" --yes --cleanup-tag || true
+          done < <(gh release list --limit 100 --json tagName -q '.[].tagName')
+
+          git fetch --tags origin 2>/dev/null || true
+          for tag in $(git tag -l 'v*'); do
+            echo "Deleting leftover tag: $tag"
+            git push origin ":refs/tags/$tag" 2>/dev/null || true
+            git tag -d "$tag" 2>/dev/null || true
+          done
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.apk.outputs.version }}"
+          TAG="${{ steps.apk.outputs.tag }}"
+          APK="${{ steps.apk.outputs.path }}"
+
+          gh release create "$TAG" "$APK" \
+            --title "JulesLink $VERSION" \
+            --latest \
+            --notes "## JulesLink $VERSION
+
+          One-tap Android home-screen link to [Jules](https://jules.google.com/) — Google's autonomous coding agent.
+
+          ### Install
+          1. Download **\`$APK\`** from Assets below
+          2. Open it on your Android phone (allow install from browser if asked)
+          3. Launch **Jules** and sign in with your Google account
+
+          ### Details
+          - Minimum Android 7.0 (API 24)
+          - Full Google sign-in supported (cookies + OAuth windows stay in-app)
+          - Only the latest release is kept on this repo
+          - Sideload only — not published on the Play Store
+          "

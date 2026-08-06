@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Jules</string>
+    <string name="splash_tagline">Your coding agent, one tap away</string>
+    <string name="loading">Connecting to Jules…</string>
+    <string name="error_title">Couldn\'t reach Jules</string>
+    <string name="error_message">Check your connection and try again.</string>
+    <string name="retry">Try again</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_open_browser">Open in browser</string>
+    <string name="menu_clear_session">Sign out & clear data</string>
+    <string name="session_cleared">Signed out. Session cleared.</string>
+    <string name="offline_banner">You\'re offline</string>
+</resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.JulesLink" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/jules_mint</item>
+        <item name="colorOnPrimary">@color/jules_bg</item>
+        <item name="colorSecondary">@color/jules_cyan</item>
+        <item name="colorOnSecondary">@color/jules_bg</item>
+        <item name="colorTertiary">@color/jules_violet</item>
+        <item name="android:colorBackground">@color/jules_bg</item>
+        <item name="colorSurface">@color/jules_surface</item>
+        <item name="colorOnSurface">@color/jules_text</item>
+        <item name="colorOnSurfaceVariant">@color/jules_text_muted</item>
+        <item name="android:statusBarColor">@color/jules_bg</item>
+        <item name="android:navigationBarColor">@color/jules_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">@color/jules_bg</item>
+    </style>
+</resources>
