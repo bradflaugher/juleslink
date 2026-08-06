@@ -5,7 +5,7 @@ A clean, native Android home for [Jules](https://jules.google.com/) — Google�
 No official Jules app? This gives you a dedicated launcher icon, a polished dark UI, and a WebView tuned so **Google sign-in actually works**.
 
 <p align="center">
-  <a href="https://github.com/ElcanoTek/juleslink/releases/latest">
+  <a href="https://github.com/bradflaugher/juleslink/releases/latest">
     <img alt="Download APK" src="https://img.shields.io/badge/Download-APK-5CFFB0?style=for-the-badge&logo=android&logoColor=0B0F14" />
   </a>
 </p>
@@ -23,7 +23,7 @@ No official Jules app? This gives you a dedicated launcher icon, a polished dark
 
 ## Install
 
-1. Open the **[latest release](https://github.com/ElcanoTek/juleslink/releases/latest)**
+1. Open the **[latest release](https://github.com/bradflaugher/juleslink/releases/latest)**
 2. Download `JulesLink-v*.apk`
 3. On your phone: allow install from the browser if prompted → install → open **Jules**
 4. Sign in with the Google account you use for Jules
@@ -42,7 +42,7 @@ Requirements: JDK 17+, Android SDK (compileSdk 35).
 ## Project layout
 
 ```
-app/src/main/java/com/ElcanoTek/juleslink/
+app/src/main/java/com/bradflaugher/juleslink/
   MainActivity.kt          # WebView shell, login, chrome, menus
 .github/workflows/
   build-release.yml        # Build APK → delete old releases → publish latest
