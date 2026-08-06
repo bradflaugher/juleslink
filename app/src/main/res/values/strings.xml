@@ -10,7 +10,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_share">Share</string>
     <string name="menu_open_browser">Open in browser</string>
-    <string name="menu_clear_session">Sign out & clear data</string>
+    <string name="menu_clear_session">Sign out and clear data</string>
     <string name="session_cleared">Signed out. Session cleared.</string>
     <string name="offline_banner">You\'re offline</string>
 </resources>
